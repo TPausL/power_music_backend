@@ -21,7 +21,10 @@ Rails.application.routes.draw do
     end
 
     namespace :auth do
-      get 'spotify/login', to: 'spotify#login'
+      namespace :spotify do
+        get 'login', to: 'login'
+        post 'code', to: 'code'
+      end
     end
 
     resources :playlists

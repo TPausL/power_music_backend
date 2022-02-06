@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_02_04_193125) do
+ActiveRecord::Schema.define(version: 2022_02_06_112657) do
 
   create_table "oauth_access_grants", force: :cascade do |t|
     t.string "resource_owner_id", null: false
@@ -67,6 +67,17 @@ ActiveRecord::Schema.define(version: 2022_02_04_193125) do
     t.index ["owner_id"], name: "index_playlists_on_owner_id"
   end
 
+  create_table "spotify_tokens", id: :string, force: :cascade do |t|
+    t.string "access_token", null: false
+    t.string "refresh_token", null: false
+    t.string "scope", null: false
+    t.integer "expires_in", null: false
+    t.string "owner_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["owner_id"], name: "index_spotify_tokens_on_owner_id"
+  end
+
   create_table "users", id: :string, force: :cascade do |t|
     t.string "name", null: false
     t.string "email", default: "", null: false
@@ -85,4 +96,5 @@ ActiveRecord::Schema.define(version: 2022_02_04_193125) do
   add_foreign_key "oauth_access_tokens", "oauth_applications", column: "application_id"
   add_foreign_key "oauth_access_tokens", "users", column: "resource_owner_id"
   add_foreign_key "playlists", "users", column: "owner_id"
+  add_foreign_key "spotify_tokens", "users", column: "owner_id"
 end
