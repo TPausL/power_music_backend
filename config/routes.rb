@@ -20,6 +20,8 @@ Rails.application.routes.draw do
       post 'auth/register', to: 'auth/registrations#create'
     end
 
+    get '/test', to: 'playlists#test'
+
     namespace :auth do
       namespace :spotify do
         get 'login', to: 'login'

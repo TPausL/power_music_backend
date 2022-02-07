@@ -15,7 +15,7 @@ class User < ApplicationRecord
            foreign_key: :resource_owner_id,
            dependent: :delete_all # or :destroy if you need callbacks
 
-  has_one :spotify_access_token,
+  has_one :spotify_token,
           class_name: 'SpotifyToken',
           foreign_key: :owner_id,
           dependent: :delete # or :destroy if you need callbacks

@@ -62,6 +62,7 @@ ActiveRecord::Schema.define(version: 2022_02_06_112657) do
     t.string "source"
     t.string "source_id"
     t.integer "count"
+    t.string "image_url"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["owner_id"], name: "index_playlists_on_owner_id"

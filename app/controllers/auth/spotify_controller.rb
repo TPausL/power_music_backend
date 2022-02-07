@@ -1,7 +1,16 @@
 class Auth::SpotifyController < ApplicationController
   before_action :doorkeeper_authorize!
 
+  include Helpers::SpotifyHelper
+
   def login
+    if current_user.spotify_token
+      render json: {
+               message: 'You are already logged in to spotify',
+             },
+             status: 400
+      return
+    end
     auth_uri =
       URI::HTTPS.build(
         host: 'accounts.spotify.com',
@@ -12,6 +21,8 @@ class Auth::SpotifyController < ApplicationController
           scope:
             %w[
               user-read-email
+              user-read-private
+              user-top-read
               playlist-read-private
               playlist-modify-public
               playlist-modify-private
@@ -25,6 +36,13 @@ class Auth::SpotifyController < ApplicationController
   end
 
   def code
+    if current_user.spotify_token
+      render json: {
+               message: 'You are already logged in to spotify',
+             },
+             status: 400
+      return
+    end
     token_uri =
       URI::HTTPS.build(host: 'accounts.spotify.com', path: '/api/token')
     res =
@@ -46,6 +64,8 @@ class Auth::SpotifyController < ApplicationController
       spt = SpotifyToken.new(res.parse.except('token_type'))
       spt.owner = current_user
       spt.save
+      current_user.reload_spotify_token
+      spt_fetch_playlists
       render json: { message: 'Succesfully authorized with Spotify' }
     else
       render json: res.parse, status: res.status

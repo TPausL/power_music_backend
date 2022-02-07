@@ -7,6 +7,7 @@ class CreatePlaylists < ActiveRecord::Migration[7.0]
       t.string :source
       t.string :source_id
       t.integer :count
+      t.string :image_url
       t.timestamps
     end
     add_foreign_key :playlists, :users, column: :owner_id
