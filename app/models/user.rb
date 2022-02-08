@@ -20,5 +20,18 @@ class User < ApplicationRecord
           foreign_key: :owner_id,
           dependent: :delete # or :destroy if you need callbacks
 
+  has_many :service_connections,
+           class_name: 'ServiceUser',
+           dependent: :delete_all
+
+  has_many :playlists,
+           class_name: 'Playlist',
+           foreign_key: :owner_id,
+           dependent: :delete_all
+
+  def spotify_user
+    return self.service_connections&.where(source: 'spotify')&.first
+  end
+
   validates :name, presence: true
 end

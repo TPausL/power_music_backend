@@ -1,6 +1,14 @@
 module Helpers::SpotifyHelper
+  def spt_get_playlists
+    lists = current_user.playlists
+    if (!lists.any?)
+      return spt_fetch_playlists
+    else
+      return lists
+    end
+  end
+
   def spt_fetch_playlists
-    puts 'test'
     user = get_user
     res = get('me/playlists', { 'limit': 50 })
     lists =
@@ -13,7 +21,7 @@ module Helpers::SpotifyHelper
             count: p['tracks']['total'],
             image_url: p['images'].first['url'],
           }
-          list = Playlist.find_by(source_id: p['id'])
+          list = current_user.playlists.where(source_id: p['id']).first
           if (list)
             list.update(newList)
           else
@@ -26,6 +34,38 @@ module Helpers::SpotifyHelper
       end
     return lists.compact
   end
+
+  def spt_get_user
+    user = current_user.spotify_user
+    if (!user)
+      return spt_fetch_user
+    else
+      return user
+    end
+  end
+
+  def spt_fetch_user
+    res = get('me')
+    new_user = {
+      source: 'spotify',
+      id: res['id'],
+      email: res['email'],
+      name: res['display_name'],
+      image_url: res['images'].first['url'],
+    }
+    spt_user = current_user.spotify_user
+    if (spt_user)
+      spt_user.update(new_user)
+    else
+      spt_user = ServiceUser.new(new_user)
+      spt_user.user = current_user
+      spt_user.save
+      current_user.service_connections.reload
+    end
+    return spt_user
+  end
+
+  private
 
   def get(path, query = {})
     token = current_user.spotify_token.access_token
@@ -40,15 +80,14 @@ module Helpers::SpotifyHelper
         .headers(accept: 'application/json', authorization: 'Bearer ' + token)
         .get(uri)
     if (res.status == 401)
-      refresh_token
-      return get(path, query)
+      if (res.parse['error']['message'] == 'The access token expired')
+        refresh_token
+        return get(path, query)
+      else
+        raise 'User not logged in'
+      end
     end
     return res.parse
-  end
-
-  def get_user()
-    res = get('me')
-    return Helpers::HelperUser.new(res)
   end
 
   def refresh_token

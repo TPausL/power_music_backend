@@ -2,12 +2,15 @@ class Auth::SpotifyController < ApplicationController
   before_action :doorkeeper_authorize!
 
   include Helpers::SpotifyHelper
+  include Helpers::ResponseHelper
 
   def login
     if current_user.spotify_token
-      render json: {
-               message: 'You are already logged in to spotify',
-             },
+      render json:
+               error(
+                 'Something went wrong authorizing with Spotify',
+                 { auth: 'You are already logged in to Spotify!' },
+               ),
              status: 400
       return
     end
@@ -37,9 +40,11 @@ class Auth::SpotifyController < ApplicationController
 
   def code
     if current_user.spotify_token
-      render json: {
-               message: 'You are already logged in to spotify',
-             },
+      render json:
+               error(
+                 'Something went wrong authorizing with Spotify',
+                 { auth: 'You are already logged in to Spotify!' },
+               ),
              status: 400
       return
     end
@@ -65,12 +70,22 @@ class Auth::SpotifyController < ApplicationController
       spt.owner = current_user
       spt.save
       current_user.reload_spotify_token
-      spt_fetch_playlists
-      render json: { message: 'Succesfully authorized with Spotify' }
+      render json:
+               success(
+                 'Succesfully authorized with Spotify',
+                 spt_fetch_user.to_builder,
+               )
     else
-      render json: res.parse, status: res.status
+      render json:
+               error(
+                 'Something went wrong authorizing with Spotify',
+                 { from_service: res.parse['error']['message'] },
+               ),
+             status: res.status
     end
   end
+
+  private
 
   def generate_state(number)
     charset = Array('A'..'Z') + Array('a'..'z')
