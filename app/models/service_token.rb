@@ -1,4 +1,4 @@
-class SpotifyToken < ApplicationRecord
+class ServiceToken < ApplicationRecord
   before_save { |token| token.id = SecureRandom.uuid }
 
   belongs_to :owner, class_name: 'User'

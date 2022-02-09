@@ -15,10 +15,10 @@ class User < ApplicationRecord
            foreign_key: :resource_owner_id,
            dependent: :delete_all # or :destroy if you need callbacks
 
-  has_one :spotify_token,
-          class_name: 'SpotifyToken',
-          foreign_key: :owner_id,
-          dependent: :delete # or :destroy if you need callbacks
+  has_many :service_tokens,
+           class_name: 'ServiceToken',
+           foreign_key: :owner_id,
+           dependent: :delete_all # or :destroy if you need callbacks
 
   has_many :service_connections,
            class_name: 'ServiceUser',
@@ -29,8 +29,20 @@ class User < ApplicationRecord
            foreign_key: :owner_id,
            dependent: :delete_all
 
+  def spotify_token
+    return self.service_tokens&.where(source: 'spotify')&.first
+  end
+
+  def youtube_token
+    return self.service_tokens&.where(source: 'youtube')&.first
+  end
+
   def spotify_user
     return self.service_connections&.where(source: 'spotify')&.first
+  end
+
+  def youtube_user
+    return self.service_connections&.where(source: 'youtube')&.first
   end
 
   validates :name, presence: true

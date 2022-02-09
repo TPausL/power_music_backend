@@ -1,5 +1,5 @@
 module Helpers::ResponseHelper
-  def success(message, object)
+  def success(message, object = {})
     return(
       (
         Jbuilder.new do |r|
@@ -9,7 +9,7 @@ module Helpers::ResponseHelper
       ).target!
     )
   end
-  def error(message, errors)
+  def error(message, errors = {})
     return(
       (
         Jbuilder.new do |r|

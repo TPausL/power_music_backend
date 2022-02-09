@@ -32,5 +32,5 @@
 # Ignore master key for decrypting credentials and more.
 /config/master.key
 
-
-.env
+google.json
+google_store.yaml

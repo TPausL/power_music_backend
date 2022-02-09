@@ -35,7 +35,14 @@ class Auth::SpotifyController < ApplicationController
           state: generate_state(16),
         }.to_query,
       )
-    render json: { 'redirect_to': auth_uri }
+    render json:
+             success(
+               'Please redirect user to following URL and return code here.',
+               {
+                 url: auth_uri,
+                 code_to: 'http://localhost:3000/auth/youtube/code',
+               },
+             )
   end
 
   def code
@@ -66,20 +73,27 @@ class Auth::SpotifyController < ApplicationController
           },
         )
     if (res.status == 200)
-      spt = SpotifyToken.new(res.parse.except('token_type'))
+      data = res.parse
+      data['source'] = 'spotify'
+      spt = ServiceToken.new(data.except('token_type'))
       spt.owner = current_user
       spt.save
-      current_user.reload_spotify_token
+      current_user.service_tokens.reload
       render json:
                success(
                  'Succesfully authorized with Spotify',
                  spt_fetch_user.to_builder,
                )
     else
+      puts res.parse
       render json:
                error(
                  'Something went wrong authorizing with Spotify',
-                 { from_service: res.parse['error']['message'] },
+                 {
+                   from_service:
+                     res.parse['error']['message'] ||
+                       res.parse['error_description'] || res.parse['error'],
+                 },
                ),
              status: res.status
     end

@@ -52,5 +52,7 @@ gem "doorkeeper", "~> 5.5"
 
 gem 'solargraph', group: :development
 
+gem "googleauth"
+gem "google-apis-youtube_v3"
 
 gem "http", "~> 5.0"

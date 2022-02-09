@@ -25,6 +25,10 @@ Rails.application.routes.draw do
         get 'login', to: 'login'
         post 'code', to: 'code'
       end
+      namespace :youtube do
+        get 'login', to: 'login'
+        post 'code', to: 'code'
+      end
     end
 
     resources :playlists
