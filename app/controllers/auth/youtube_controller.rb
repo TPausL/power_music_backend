@@ -9,14 +9,17 @@ class Auth::YoutubeController < ApplicationController
 
   def initialize
     super
-    @scopes = ['https://www.googleapis.com/auth/youtube']
+    @scopes = %w[
+      https://www.googleapis.com/auth/youtube
+      https://www.googleapis.com/auth/userinfo.email
+    ]
     @token_store =
       Google::Auth::Stores::FileTokenStore.new(file: 'google_store.yaml')
     @client_id = Google::Auth::ClientId.from_file('config/google.json')
   end
 
   def login
-    if current_user.youtube_user
+    if @token_store.load(current_user.id)
       render json:
                error(
                  'Something went wrong authorizing with Youtube',
@@ -41,7 +44,7 @@ class Auth::YoutubeController < ApplicationController
   end
 
   def code
-    if current_user.youtube_user
+    if @token_store.load(current_user.id)
       render json:
                error(
                  'Something went wrong authorizing with Youtube',
@@ -78,17 +81,14 @@ class Auth::YoutubeController < ApplicationController
           'client_id',
           'client_secret',
         )
+      current_user.youtube_token&.delete
       token = ServiceToken.new(data)
       token.source = 'youtube'
       token.owner = current_user
       token.save
       current_user.service_tokens.reload
       yt_setup
-      render json:
-               success(
-                 'Succesfully authorized with Youtube',
-                 yt_fetch_user.to_builder,
-               )
+      render json: success('Succesfully authorized with Youtube', yt_fetch_user)
     rescue => e
       render json:
                error(

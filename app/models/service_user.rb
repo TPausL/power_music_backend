@@ -3,9 +3,9 @@ class ServiceUser < ApplicationRecord
 
   def to_builder
     Jbuilder.new do |user|
-      user.name name
-      user.email email
+      user.(self, :name, :email)
       user.image image_url
+      user.service source
     end
   end
 end

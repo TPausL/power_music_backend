@@ -80,10 +80,7 @@ class Auth::SpotifyController < ApplicationController
       spt.save
       current_user.service_tokens.reload
       render json:
-               success(
-                 'Succesfully authorized with Spotify',
-                 spt_fetch_user.to_builder,
-               )
+               success('Succesfully authorized with Spotify', spt_fetch_user)
     else
       puts res.parse
       render json:

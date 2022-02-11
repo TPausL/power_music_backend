@@ -4,11 +4,22 @@ module Helpers::ResponseHelper
       (
         Jbuilder.new do |r|
           r.message message
-          r.object object
+          if object.is_a? Enumerable
+            r.object do
+              object.each do |o|
+                r.child! do |n|
+                  n.merge! defined?(o.to_builder) ? o.to_builder : o
+                end
+              end
+            end
+          else
+            r.object defined?(object.to_builder) ? object.to_builder : object
+          end
         end
       ).target!
     )
   end
+
   def error(message, errors = {})
     return(
       (

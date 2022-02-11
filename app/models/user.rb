@@ -29,10 +29,21 @@ class User < ApplicationRecord
            foreign_key: :owner_id,
            dependent: :delete_all
 
+  has_many :merges,
+           class_name: 'Merge',
+           foreign_key: :owner_id,
+           dependent: :delete_all
+
+  def spotify_playlists
+    return self.playlists&.where(source: 'spotify')
+  end
+  def youtube_playlists
+    return self.playlists&.where(source: 'youtube')
+  end
+
   def spotify_token
     return self.service_tokens&.where(source: 'spotify')&.first
   end
-
   def youtube_token
     return self.service_tokens&.where(source: 'youtube')&.first
   end
@@ -40,7 +51,6 @@ class User < ApplicationRecord
   def spotify_user
     return self.service_connections&.where(source: 'spotify')&.first
   end
-
   def youtube_user
     return self.service_connections&.where(source: 'youtube')&.first
   end

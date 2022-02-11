@@ -1,6 +1,6 @@
 module Helpers::SpotifyHelper
   def spt_get_playlists
-    lists = current_user.playlists
+    lists = current_user.spotify_playlists
     if (!lists.any?)
       return spt_fetch_playlists
     else
@@ -9,7 +9,7 @@ module Helpers::SpotifyHelper
   end
 
   def spt_fetch_playlists
-    user = get_user
+    user = spt_get_user
     res = get('me/playlists', { 'limit': 50 })
     lists =
       res['items'].map do |p|

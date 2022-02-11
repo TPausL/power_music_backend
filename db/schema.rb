@@ -10,7 +10,21 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_02_08_161331) do
+ActiveRecord::Schema.define(version: 2022_02_11_163352) do
+
+  create_table "merges", id: :string, force: :cascade do |t|
+    t.string "owner_id"
+    t.string "left_id", null: false
+    t.string "right_id", null: false
+    t.string "direction", default: "both", null: false
+    t.string "name"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["left_id", "right_id"], name: "index_merges_on_left_id_and_right_id", unique: true
+    t.index ["left_id"], name: "index_merges_on_left_id"
+    t.index ["owner_id"], name: "index_merges_on_owner_id"
+    t.index ["right_id"], name: "index_merges_on_right_id"
+  end
 
   create_table "oauth_access_grants", force: :cascade do |t|
     t.string "resource_owner_id", null: false
@@ -106,6 +120,9 @@ ActiveRecord::Schema.define(version: 2022_02_08_161331) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
+  add_foreign_key "merges", "playlists", column: "left_id"
+  add_foreign_key "merges", "playlists", column: "right_id"
+  add_foreign_key "merges", "users", column: "owner_id"
   add_foreign_key "oauth_access_grants", "oauth_applications", column: "application_id"
   add_foreign_key "oauth_access_grants", "users", column: "resource_owner_id"
   add_foreign_key "oauth_access_tokens", "oauth_applications", column: "application_id"

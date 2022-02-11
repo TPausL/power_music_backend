@@ -31,6 +31,8 @@ Rails.application.routes.draw do
       end
     end
 
-    resources :playlists
+    get 'test', to: 'merges#test'
+
+    resources :merges
   end
 end

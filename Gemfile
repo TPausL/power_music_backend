@@ -39,6 +39,7 @@ gem "bootsnap", require: false
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
   gem "debug", platforms: %i[ mri mingw x64_mingw ]
+  gem 'whenever-test'
 end
 
 group :development do
@@ -54,5 +55,7 @@ gem 'solargraph', group: :development
 
 gem "googleauth"
 gem "google-apis-youtube_v3"
+gem "google-apis-oauth2_v2"
+gem 'whenever', require: false
 
 gem "http", "~> 5.0"

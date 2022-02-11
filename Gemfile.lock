@@ -75,6 +75,7 @@ GEM
     bootsnap (1.10.3)
       msgpack (~> 1.2)
     builder (3.2.4)
+    chronic (0.10.2)
     concurrent-ruby (1.1.9)
     crass (1.0.6)
     debug (1.4.0)
@@ -133,6 +134,8 @@ GEM
       retriable (>= 2.0, < 4.a)
       rexml
       webrick
+    google-apis-oauth2_v2 (0.7.0)
+      google-apis-core (>= 0.4, < 2.a)
     google-apis-youtube_v3 (0.14.0)
       google-apis-core (>= 0.4, < 2.a)
     googleauth (1.1.0)
@@ -308,6 +311,10 @@ GEM
     websocket-driver (0.7.5)
       websocket-extensions (>= 0.1.0)
     websocket-extensions (0.1.5)
+    whenever (1.0.0)
+      chronic (>= 0.6.3)
+    whenever-test (1.0.1)
+      whenever
     yard (0.9.27)
       webrick (~> 1.7.0)
     zeitwerk (2.5.4)
@@ -320,6 +327,7 @@ DEPENDENCIES
   debug
   devise
   doorkeeper (~> 5.5)
+  google-apis-oauth2_v2
   google-apis-youtube_v3
   googleauth
   http (~> 5.0)
@@ -329,6 +337,8 @@ DEPENDENCIES
   solargraph
   sqlite3 (~> 1.4)
   tzinfo-data
+  whenever
+  whenever-test
 
 RUBY VERSION
    ruby 3.0.0p0
