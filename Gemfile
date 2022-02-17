@@ -59,3 +59,6 @@ gem "google-apis-oauth2_v2"
 gem 'whenever', require: false
 
 gem "http", "~> 5.0"
+
+
+gem "recursive-open-struct", "~> 1.1"

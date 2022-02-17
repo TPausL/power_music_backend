@@ -26,5 +26,7 @@ module PowerMusicBackend
 
     config.middleware.use ActionDispatch::Cookies
     config.middleware.use ActionDispatch::Session::CookieStore, key: 'pm_login'
+
+    config.log_level = :warn
   end
 end

@@ -24,6 +24,10 @@ module Helpers::YoutubeHelper
         mine: true,
         max_results: 50,
       )
+    service_ids = res.items.collect(&:id)
+    db_ids =
+      current_user.playlists.where(source: 'youtube').collect(&:source_id)
+    Playlist.where(source_id: db_ids - service_ids).destroy_all
     res.items.map do |p|
       newList = {
         title: p.snippet.title,

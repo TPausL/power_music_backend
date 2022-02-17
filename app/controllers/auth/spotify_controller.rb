@@ -82,7 +82,6 @@ class Auth::SpotifyController < ApplicationController
       render json:
                success('Succesfully authorized with Spotify', spt_fetch_user)
     else
-      puts res.parse
       render json:
                error(
                  'Something went wrong authorizing with Spotify',

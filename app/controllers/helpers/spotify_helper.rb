@@ -11,6 +11,16 @@ module Helpers::SpotifyHelper
   def spt_fetch_playlists
     user = spt_get_user
     res = get('me/playlists', { 'limit': 50 })
+    r =
+      RecursiveOpenStruct.new(
+        get('me/playlists', { 'limit': 50 }),
+        recurse_over_arrays: true,
+      )
+    service_ids = r.items.collect(&:id)
+    db_ids =
+      current_user.playlists.where(source: 'spotify').collect(&:source_id)
+    Playlist.where(source_id: db_ids - service_ids).destroy_all
+
     lists =
       res['items'].map do |p|
         if (p['collaborative'] || p['owner']['id'] == user.id)
@@ -19,7 +29,7 @@ module Helpers::SpotifyHelper
             source: 'spotify',
             source_id: p['id'],
             count: p['tracks']['total'],
-            image_url: p['images'].first['url'],
+            image_url: p['images'].any? ? p['images']&.first['url'] : nil,
           }
           list = current_user.playlists.where(source_id: p['id']).first
           if (list)

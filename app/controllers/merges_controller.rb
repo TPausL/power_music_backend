@@ -15,10 +15,12 @@ class MergesController < ApplicationController
   def create
     begin
       m = Merge.new
+      m.direction = params['direction'] || 'both'
       m.left = current_user.playlists.where(id: params['left'])&.first
       m.right = current_user.playlists.where(id: params['right'])&.first
       m.owner = current_user
       m.save!
+      Merge.exec_one(m)
       render json: success('Succesfully created merge', m)
       return
     rescue ActiveRecord::RecordNotUnique => e
@@ -33,7 +35,7 @@ class MergesController < ApplicationController
       end
       render json: error('An unknown error occurred', e), status: 400
       return
-    rescue e
+    rescue => e
       render json: error('An unknown error occurred', e), status: 400
       return
     end

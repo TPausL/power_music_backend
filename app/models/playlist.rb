@@ -1,10 +1,10 @@
 class Playlist < ApplicationRecord
-  before_save { |playlist| playlist.id = SecureRandom.uuid }
+  before_create { |playlist| playlist.id = SecureRandom.uuid }
 
   belongs_to :owner, class_name: 'User'
 
   def merges
-    return left_merges.merge right_merges
+    return Merge.where(left: self).or(Merge.where(right: self))
   end
 
   def to_builder
@@ -18,6 +18,14 @@ class Playlist < ApplicationRecord
 
   private
 
-  has_many :left_merges, class_name: 'Merge', foreign_key: 'left_id'
-  has_many :right_merges, class_name: 'Merge', foreign_key: 'right_id'
+  has_many :left_merges,
+           class_name: 'Merge',
+           foreign_key: 'left_id',
+           inverse_of: :left,
+           dependent: :delete_all
+  has_many :right_merges,
+           class_name: 'Merge',
+           foreign_key: 'right_id',
+           inverse_of: :right,
+           dependent: :delete_all
 end

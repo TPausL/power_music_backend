@@ -1,5 +1,5 @@
 class User < ApplicationRecord
-  before_save { |user| user.id = SecureRandom.uuid }
+  before_create { |user| user.id = SecureRandom.uuid }
 
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
@@ -17,7 +17,7 @@ class User < ApplicationRecord
 
   has_many :service_tokens,
            class_name: 'ServiceToken',
-           foreign_key: :owner_id,
+           foreign_key: 'owner_id',
            dependent: :delete_all # or :destroy if you need callbacks
 
   has_many :service_connections,
@@ -26,12 +26,12 @@ class User < ApplicationRecord
 
   has_many :playlists,
            class_name: 'Playlist',
-           foreign_key: :owner_id,
+           foreign_key: 'owner_id',
            dependent: :delete_all
 
   has_many :merges,
            class_name: 'Merge',
-           foreign_key: :owner_id,
+           foreign_key: 'owner_id',
            dependent: :delete_all
 
   def spotify_playlists
@@ -54,6 +54,5 @@ class User < ApplicationRecord
   def youtube_user
     return self.service_connections&.where(source: 'youtube')&.first
   end
-
   validates :name, presence: true
 end
