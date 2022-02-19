@@ -34,5 +34,8 @@ Rails.application.routes.draw do
     get 'test', to: 'merges#test'
 
     resources :merges
+    resources :playlists, only: %i[index show]
+
+    patch 'playlists', to: 'playlists#fetch'
   end
 end

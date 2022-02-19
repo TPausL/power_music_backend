@@ -2,19 +2,28 @@ class MergesController < ApplicationController
   include Helpers::ResponseHelper
   include Helpers::SpotifyHelper
   include Helpers::YoutubeHelper
+  include Helpers::Validation
+
+  before_action except: %i[index create] do
+    validate(:merges, :id)
+  end
 
   def index
+    if current_user.merges.empty?
+      render json: error("You don't have any merges"), status: 404
+      return
+    end
     render json: success('List of your merges', current_user.merges)
   end
 
-  def test
-    yt_fetch_playlists
-    spt_fetch_playlists
+  def show
+    render json:
+             success("Merge with id #{params['id']}", Merge.find(params['id']))
   end
 
   def create
     begin
-      m = Merge.new
+      m = Merge.create(merge_params)
       m.direction = params['direction'] || 'both'
       m.left = current_user.playlists.where(id: params['left'])&.first
       m.right = current_user.playlists.where(id: params['right'])&.first
@@ -39,5 +48,12 @@ class MergesController < ApplicationController
       render json: error('An unknown error occurred', e), status: 400
       return
     end
+  end
+
+  def update; end
+
+  def destroy
+    current_user.merges.find(params[:id]).destroy
+    render json: success('Succesfully deleted merge')
   end
 end
