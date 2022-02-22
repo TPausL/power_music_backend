@@ -35,14 +35,18 @@ class Auth::SpotifyController < ApplicationController
           state: generate_state(16),
         }.to_query,
       )
-    render json:
-             success(
-               'Please redirect user to following URL and return code here.',
-               {
-                 url: auth_uri,
-                 code_to: 'http://localhost:3000/auth/youtube/code',
-               },
-             )
+      if(params[:redirect])  
+        redirect_to auth_uri.to_s, allow_other_host: true
+      else 
+   render json:
+            success(
+              'Please redirect user to following URL and return code here.',
+              {
+                url: auth_uri,
+                code_to: 'http://localhost:3000/auth/youtube/code',
+              },
+            )
+          end
   end
 
   def code

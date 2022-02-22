@@ -1,4 +1,5 @@
 class ApplicationController < ActionController::API
+
   before_action :set_user
   respond_to :json
 
@@ -9,5 +10,9 @@ class ApplicationController < ActionController::API
     return nil if !user_id
     user = User.find(user_id)
     sign_in(user)
+  end
+
+  def handle_options_request
+    head(:ok) if request.request_method == "OPTIONS"
   end
 end

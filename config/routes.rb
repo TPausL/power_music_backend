@@ -1,9 +1,8 @@
 Rails.application.routes.draw do
   defaults format: :json do
     use_doorkeeper do
-      skip_controllers :authorizations, :applications, :authorized_applications
+      skip_controllers :applications, :authorized_applications
     end
-
     devise_for :users,
                path: 'auth',
                path_names: {
@@ -14,7 +13,7 @@ Rails.application.routes.draw do
                  registrations: 'auth/registrations',
                  #passwords: "auth/password"
                },
-               skip: :all
+              skip: :all
 
     devise_scope :user do
       post 'auth/register', to: 'auth/registrations#create'
@@ -37,5 +36,7 @@ Rails.application.routes.draw do
     resources :playlists, only: %i[index show]
 
     patch 'playlists', to: 'playlists#fetch'
+
+    match '*path', :controller => 'application', :action => 'handle_options_request', :constraints => {:method => 'OPTIONS'}, via: :options
   end
 end

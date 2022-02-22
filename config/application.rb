@@ -2,6 +2,8 @@ require_relative 'boot'
 
 require 'rails/all'
 
+require_relative "../lib/middleware/headers"
+
 # Require the gems listed in Gemfile, including any gems
 # you've limited to :test, :development, or :production.
 Bundler.require(*Rails.groups)
@@ -26,7 +28,7 @@ module PowerMusicBackend
 
     config.middleware.use ActionDispatch::Cookies
     config.middleware.use ActionDispatch::Session::CookieStore, key: 'pm_login'
-
-    config.log_level = :warn
+    config.middleware.use Headers
+    config.log_level = :debug
   end
 end
