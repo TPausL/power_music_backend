@@ -4,6 +4,8 @@ class MergesController < ApplicationController
   include Helpers::YoutubeHelper
   include Helpers::Validation
 
+  before_action :doorkeeper_authorize!
+
   before_action except: %i[index create] do
     validate(:merges, :id)
   end

@@ -4,6 +4,9 @@ class PlaylistsController < ApplicationController
   include Helpers::SpotifyHelper
   include Helpers::YoutubeHelper
 
+  before_action :doorkeeper_authorize!
+
+  
   before_action only: :show do |c|
     c.validate(:playlists, :id)
   end

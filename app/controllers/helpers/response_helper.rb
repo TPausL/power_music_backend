@@ -4,7 +4,7 @@ module Helpers::ResponseHelper
       (
         Jbuilder.new do |r|
           r.message message
-          if object.is_a? Enumerable
+          if (object.is_a?(Enumerable) && !object.is_a?(Hash))
             r.object do
               object.each do |o|
                 r.child! do |n|

@@ -10,8 +10,7 @@
         headers['Access-Control-Allow-Origin'] = '*'
         headers['Access-Control-Allow-Methods'] = '*'
         headers['Access-Control-Allow-Headers'] = '*'
-        headers['Access-Control-Request-Method'] = '*'
-  
+        headers['Access-Control-Request-Method'] = '*'  
         [status, headers, body]
       end
     end

@@ -30,8 +30,7 @@ Rails.application.routes.draw do
       end
     end
 
-    get 'test', to: 'merges#test'
-
+    resources :user, only: :index
     resources :merges
     resources :playlists, only: %i[index show]
 

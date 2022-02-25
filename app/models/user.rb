@@ -34,6 +34,19 @@ class User < ApplicationRecord
            foreign_key: 'owner_id',
            dependent: :delete_all
 
+  def to_builder(full = false) 
+    Jbuilder.new do |user|
+      user.(self, :name, :email, :id)
+      user.service_connections do
+        self.service_connections.each do |s|
+          user.child! do |n|
+            n.merge! s.to_builder
+          end
+        end
+      end
+    end
+  end
+
   def spotify_playlists
     return self.playlists&.where(source: 'spotify')
   end

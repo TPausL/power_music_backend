@@ -42,7 +42,7 @@ class Auth::SpotifyController < ApplicationController
             success(
               'Please redirect user to following URL and return code here.',
               {
-                url: auth_uri,
+                redirect_uri: auth_uri,
                 code_to: 'http://localhost:3000/auth/youtube/code',
               },
             )

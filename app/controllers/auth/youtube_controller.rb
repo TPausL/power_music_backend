@@ -39,7 +39,7 @@ class Auth::YoutubeController < ApplicationController
     render json:
              success(
                'Please redirect user to following URL and return code here.',
-               { url: url, code_to: 'http://localhost:3000/auth/youtube/code' },
+               { redirect_uri: url, code_to: 'http://localhost:3000/auth/youtube/code' },
              )
   end
 
